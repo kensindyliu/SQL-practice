@@ -16,3 +16,38 @@ drop procedure USP1
 exec usp1 'Speedy Express','Bruxelles' 
 
 
+
+
+
+
+
+
+create procedure USP2
+    @companyName varchar(50),
+    @cityName varchar(50),
+    @freightAmount int OUTPUT
+AS
+BEGIN
+select emp.firstname, emp.lastname, cu.Contactname as CustomerName
+FROM employees emp
+join orders ord on ord.EmployeeID = emp.EmployeeID
+join shippers sh on sh.ShipperID = ord.shipVia
+join customers cu on cu.customerID = ord.customerID
+where sh.companyname = @companyName and cu.city = @cityName
+
+set @freightAmount = (select count(*)
+from  Customers as cus 
+inner join Orders as o on cus.CustomerID=o.CustomerID 
+inner join Employees as emp on emp.EmployeeID=o.EmployeeID 
+inner join Shippers as s on o.ShipVia = s.ShipperID
+where s.CompanyName=@companyName and cus.City =@cityName)
+
+
+
+END
+
+-- drop procedure USP2
+
+declare @Frright int
+exec usp2 'Speedy Express','Bruxelles', @Frright out
+print @Frright
