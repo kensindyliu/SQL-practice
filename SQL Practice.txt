@@ -1,0 +1,18 @@
+create procedure USP1
+    @companyName1 varchar(50),
+    @cityName varchar(50)
+AS
+BEGIN
+select emp.firstname, emp.lastname, cu.Contactname as CustomerName
+FROM employees emp
+join orders ord on ord.EmployeeID = emp.EmployeeID
+join shippers sh on sh.ShipperID = ord.shipVia
+join customers cu on cu.customerID = ord.customerID
+where sh.companyname = @companyName1 and cu.city = @cityName
+END
+
+drop procedure USP1
+
+exec usp1 'Speedy Express','Bruxelles' 
+
+
