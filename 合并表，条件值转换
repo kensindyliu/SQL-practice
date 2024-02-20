@@ -1,0 +1,63 @@
+--合并
+DECLARE @t1 TABLE (
+    dn VARCHAR(50),
+    city VARCHAR(50)
+);
+
+INSERT INTO @t1 VALUES ('marketing222', 'winnipeg');
+
+MERGE Department AS d
+USING @t1 AS t
+ON d.DepartmentName = t.dn
+WHEN MATCHED THEN
+    UPDATE SET d.City = t.city
+WHEN NOT MATCHED THEN
+    INSERT (DepartmentName, City)
+    VALUES (t.dn, t.city);
+
+--条件值转换，
+select distinct creditrating,
+case creditrating
+    when 1 then 'excellent'
+    when 2 then 'good'
+    when 3 then 'Moderate'
+    when 4 then 'Not good'
+    when 5 then 'Prety bad'
+end as creditRating_Classifications
+from [Purchasing].[Vendor]
+
+
+--用户自定义类型，用于传值给存储过程
+create type xxx as table (
+    name varchar(50),
+    city varchar(50)
+)
+
+DECLARE @abc as xxx
+insert into @abc VALUES ('abc','dddd')
+insert into @abc VALUES ('abc','dddd')
+
+
+exec test @abc
+
+create PROCEDURE test
+@t1 xxx READONLY
+AS
+BEGIN
+    select * from @t1
+END
+
+
+--另外的思考
+DECLARE @abc TABLE (
+    Column1 VARCHAR(50),
+    Column2 VARCHAR(50)
+);
+
+INSERT INTO @abc (Column1, Column2)
+VALUES ('abc', 'dddd');
+
+select * from @abc
+
+
+
